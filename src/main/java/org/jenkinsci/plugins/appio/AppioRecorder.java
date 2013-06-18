@@ -2,9 +2,7 @@ package org.jenkinsci.plugins.appio;
 
 import hudson.Extension;
 import hudson.FilePath;
-import hudson.FilePath.FileCallable;
 import hudson.Launcher;
-import hudson.remoting.VirtualChannel;
 import hudson.model.Action;
 import hudson.model.BuildListener;
 import hudson.model.Result;
@@ -16,7 +14,6 @@ import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -46,7 +43,7 @@ public class AppioRecorder extends Recorder {
 	public Action getProjectAction(AbstractProject<?, ?> project) {
         AbstractBuild<?,?> b = project.getLastBuild();
         for (int i=0; b!=null && i<10; i++) {
-            AppioProjectAction a = b.getAction(AppioProjectAction.class);
+            AppioAction a = b.getAction(AppioAction.class);
             if (a!=null)    return a;
             b = b.getPreviousBuild();
         }
@@ -135,9 +132,7 @@ public class AppioRecorder extends Recorder {
                 // Get the public App.io link for the app
                 listener.getLogger().println("App.io URL: " + "https://app.io/" + appObject.getPublic_key());
 
-                AppioProjectAction a = new AppioProjectAction();
-                a.setAppURL("https://app.io/" + appObject.getPublic_key());
-                build.addAction(a);
+                build.addAction(new AppioAction("https://app.io/" + appObject.getPublic_key()));
             } catch (Exception e) {
                 throw new IOException2("Error uploading app/version to App.io",e);
             }
