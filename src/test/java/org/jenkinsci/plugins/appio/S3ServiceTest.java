@@ -8,7 +8,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import org.jenkinsci.plugins.appio.service.AppioService;
 import org.jenkinsci.plugins.appio.service.S3Service;
 import org.junit.Test;
 
@@ -27,6 +31,15 @@ public class S3ServiceTest {
 	private File badFile = null;
 
 	private Properties testProperties = new Properties();
+	
+	// Set logging levels
+	static {
+		Logger l = Logger.getLogger(S3Service.class.getName());
+		l.setLevel(Level.ALL);
+		ConsoleHandler h = new ConsoleHandler();
+		h.setLevel(Level.ALL);
+		l.addHandler(h);
+	}
 
 	public S3ServiceTest() {
 		super();
@@ -47,6 +60,15 @@ public class S3ServiceTest {
 			uploadFile = new File(testProperties.getProperty("S3.uploadFile"));
 			badFile = new File(testProperties.getProperty("S3.badFile"));
 			badBucket = testProperties.getProperty("S3.badBucket");
+			
+			System.out.println("Using test properties from: " + propertyFile);
+			System.out.println("S3.accessKey = " + accessKey);
+			System.out.println("S3.secretKey = " + secretKey);
+			System.out.println("S3.bucketName = " + bucketName);
+			System.out.println("S3.keyName = " + keyName);
+			System.out.println("S3.uploadFile = " + uploadFile);
+			System.out.println("S3.badFile = " + badFile);
+			System.out.println("S3.badBucket = " + badBucket);
 
 		} catch (IOException e) {
 			fail();

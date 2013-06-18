@@ -17,7 +17,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.jenkinsci.plugins.appio.model.AppioAppObject;
 import org.jenkinsci.plugins.appio.model.AppioVersionObject;
 import org.jenkinsci.plugins.appio.service.AppioService;
-import org.jenkinsci.plugins.appio.service.FilepickerService;
 import org.jenkinsci.plugins.appio.service.S3Service;
 import org.junit.Test;
 
@@ -33,10 +32,6 @@ public class AppioServiceTest {
 	private String appName = null;
 	private String badKey = null;
 	private String badName = null;
-	
-	// FilepickerService test variables
-	private String fpFilePath = null;
-	private String fpApiKey = null;
 
 	// Amazon S3 test variables
 	private String accessKey = null;
@@ -46,16 +41,16 @@ public class AppioServiceTest {
 	private String uploadFile = null;
 
 	private Properties testProperties = new Properties();
-	
+
 	// Set logging levels
-    static {
-        Logger l = Logger.getLogger(AppioService.class.getName());
-        l.setLevel(Level.ALL);
-        ConsoleHandler h = new ConsoleHandler();
-        h.setLevel(Level.ALL);
-        l.addHandler(h);
-    }
-    
+	static {
+		Logger l = Logger.getLogger(AppioService.class.getName());
+		l.setLevel(Level.ALL);
+		ConsoleHandler h = new ConsoleHandler();
+		h.setLevel(Level.ALL);
+		l.addHandler(h);
+	}
+
 	public AppioServiceTest() {
 		super();
 		loadTestProperties();
@@ -63,30 +58,34 @@ public class AppioServiceTest {
 
 	// Utility to load test properties
 	public void loadTestProperties() {
-		InputStream in = this.getClass().getClassLoader()
-				.getResourceAsStream(propertyFile);
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream(propertyFile);
 
 		try {
 			testProperties.load(in);
 
-			apiKeyUnencoded = testProperties
-					.getProperty("Appio.apiKeyUnencoded");
-			byte[] encodedBytes = Base64.encodeBase64(apiKeyUnencoded
-					.getBytes());
+			apiKeyUnencoded = testProperties.getProperty("Appio.apiKeyUnencoded");
+			byte[] encodedBytes = Base64.encodeBase64(apiKeyUnencoded.getBytes());
 			apiKey = new String(encodedBytes);
 
 			appName = testProperties.getProperty("Appio.appName");
 			badKey = testProperties.getProperty("Appio.badKey");
 			badName = testProperties.getProperty("Appio.badName");
-			
-			fpFilePath = testProperties.getProperty("Filepicker.filePath");
-			fpApiKey = testProperties.getProperty("Filepicker.apiKey");
 
 			accessKey = testProperties.getProperty("S3.accessKey");
 			secretKey = testProperties.getProperty("S3.secretKey");
 			bucketName = testProperties.getProperty("S3.bucketName");
 			keyName = testProperties.getProperty("S3.keyName");
 			uploadFile = testProperties.getProperty("S3.uploadFile");
+			
+			System.out.println("Using test properties from: " + propertyFile);
+			System.out.println("Appio.appName = " + appName);
+			System.out.println("Appio.badKey = " + badKey);
+			System.out.println("Appio.badName = " + badName);
+			System.out.println("S3.accessKey = " + accessKey);
+			System.out.println("S3.secretKey = " + secretKey);
+			System.out.println("S3.bucketName = " + bucketName);
+			System.out.println("S3.keyName = " + keyName);
+			System.out.println("S3.uploadFile = " + uploadFile);
 			
 		} catch (IOException e) {
 			fail();
@@ -185,59 +184,29 @@ public class AppioServiceTest {
 	}
 
 	@Test
-	public void addVersionFilepicker() {
-		AppioService testService = new AppioService(apiKey);
-
-		try {
-			// Upload new bits via Filepicker
-			FilepickerService filepicker = new FilepickerService(fpApiKey);
-			String fileUrl = filepicker.getUploadURL(fpFilePath);
-
-			// Create a new App.io app
-			AppioAppObject testAppObject = testService.createApp(appName);
-
-			// Add a new version
-			AppioVersionObject testVersionObject = testService.addVersion(
-					testAppObject.getId(), fileUrl);
-
-			// Get app info and check for new version id
-			testAppObject = testService.findApp(appName);
-			assertEquals(testAppObject.getId(), testVersionObject.getApp_id());
-			assertEquals(testAppObject.getVersion_ids()[0],
-					testVersionObject.getId());
-
-			// Cleanup: delete the app object
-			Thread.sleep(5000);
-			testService.deleteApp(testAppObject.getId());
-
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
-	}
-
-	@Test
 	public void addVersionS3() {
 		AppioService testService = new AppioService(apiKey);
 
 		try {
 			// Upload new bits via Amazon S3
 			S3Service s3service = new S3Service(accessKey, secretKey);
-			String fileUrl = s3service.getUploadUrl(bucketName, keyName,
-					new File(uploadFile));
+			String fileUrl = s3service.getUploadUrl(bucketName, keyName, new File(uploadFile));
 
 			// Create a new App.io app
 			AppioAppObject testAppObject = testService.createApp(appName);
 
-			// Add a new version
-			AppioVersionObject testVersionObject = testService.addVersion(
-					testAppObject.getId(), fileUrl);
-
-			// Get app info and check for new version id
+			// Add a new version and check for new version id
+			AppioVersionObject testVersionObject = testService.addVersion(testAppObject.getId(), fileUrl);
 			testAppObject = testService.findApp(appName);
-
 			assertEquals(testAppObject.getId(), testVersionObject.getApp_id());
-			assertEquals(testAppObject.getVersion_ids()[0],
-					testVersionObject.getId());
+			assertEquals(testAppObject.getVersion_ids()[0], testVersionObject.getId());
+
+			// Repeat to test adding a second version
+			testVersionObject = testService.addVersion(testAppObject.getId(), fileUrl);
+			testAppObject = testService.findApp(appName);
+			assertEquals(testAppObject.getId(), testVersionObject.getApp_id());
+			// Versions stored in reverse order: version_ids[0] has the latest
+			assertEquals(testAppObject.getVersion_ids()[0], testVersionObject.getId());
 
 			// Cleanup: delete the app object
 			Thread.sleep(5000);

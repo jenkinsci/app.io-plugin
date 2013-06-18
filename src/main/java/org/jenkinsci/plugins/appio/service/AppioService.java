@@ -154,12 +154,12 @@ public class AppioService implements Serializable {
 			boolean foundAppName = false;
 			while ((iterator.hasNext()) && (!foundAppName)) {
 				AppioAppObject thisApp = iterator.next();
+
 				if (thisApp.getName().equals(appName)) {
-                    LOGGER.fine("Found app: " + appName);
                     theApp = thisApp;
+                    foundAppName = true;
 				}
 			}
-            LOGGER.fine("App not found: " + appName);
 
         } catch (Exception e) {
 			e.printStackTrace();

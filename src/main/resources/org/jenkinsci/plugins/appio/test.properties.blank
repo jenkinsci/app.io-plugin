@@ -4,25 +4,12 @@ Appio.apiKeyUnencoded=
 Appio.badKey=
 Appio.badName=
 
-# ZipServiceTest properties
-Zip.unzippedPath=
-Zip.zippedPath=
-
-# FilepickerServiceTest properties
-# Also used in AppioServiceTest.addVersionFilepicker()
-Filepicker.apiKey=
-Filepicker.filePath=
-Filepicker.badKey=
-Filepicker.badPath=
-
 # S3ServiceTest properties
 # Also used in AppioServiceTest.addVersionS3()
-S3.accessKey=AKIAJHVHERDIREFWNN7Q
-S3.secretKey=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
-S3.bucketName=mqp-appio
-S3.badBucket=foo
-S3.keyName=Chess.zip
-S3.uploadFile=/Users/markprichard/Documents/Kickfolio/Chess.app.zip
-S3.badFile=/Users/mark/foo
-
-
+S3.accessKey=
+S3.secretKey=
+S3.bucketName=
+S3.badBucket=
+S3.keyName=
+S3.uploadFile=
+S3.badFile=
