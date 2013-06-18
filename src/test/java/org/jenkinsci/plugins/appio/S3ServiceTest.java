@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -21,9 +22,9 @@ public class S3ServiceTest {
     private String secretKey = null;
 	private String bucketName = null;
 	private String keyName = null;
-	private String uploadFile = null;
+	private File uploadFile = null;
 	private String badBucket = null;
-	private String badFile = null;
+	private File badFile = null;
 
 	private Properties testProperties = new Properties();
 
@@ -43,8 +44,8 @@ public class S3ServiceTest {
             secretKey = testProperties.getProperty("S3.secretKey");
 			bucketName = testProperties.getProperty("S3.bucketName");
 			keyName = testProperties.getProperty("S3.keyName");
-			uploadFile = testProperties.getProperty("S3.uploadFile");
-			badFile = testProperties.getProperty("S3.badFile");
+			uploadFile = new File(testProperties.getProperty("S3.uploadFile"));
+			badFile = new File(testProperties.getProperty("S3.badFile"));
 			badBucket = testProperties.getProperty("S3.badBucket");
 
 		} catch (IOException e) {

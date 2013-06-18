@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -210,7 +211,7 @@ public class AppioServiceTest {
 			// Upload new bits via Amazon S3
 			S3Service s3service = new S3Service(accessKey, secretKey);
 			String fileUrl = s3service.getUploadUrl(bucketName, keyName,
-					uploadFile);
+					new File(uploadFile));
 
 			// Create a new App.io app
 			AppioAppObject testAppObject = testService.createApp(appName);

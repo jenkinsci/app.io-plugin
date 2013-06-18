@@ -48,12 +48,11 @@ public class S3Service implements Serializable {
 	 * @param uploadFile
 	 * @return
 	 */
-	public String getUploadUrl(String bucketName, String keyName, String uploadFile) throws AmazonServiceException,
+	public String getUploadUrl(String bucketName, String keyName, File uploadFile) throws AmazonServiceException,
 			AmazonClientException {
 
 		try {
-			File file = new File(uploadFile);
-			s3client.putObject(new PutObjectRequest(bucketName, keyName, file)
+			s3client.putObject(new PutObjectRequest(bucketName, keyName, uploadFile)
 					.withCannedAcl(CannedAccessControlList.PublicRead));
 
 		} catch (AmazonServiceException ase) {

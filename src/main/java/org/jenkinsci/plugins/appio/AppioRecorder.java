@@ -28,6 +28,7 @@ import org.jenkinsci.plugins.appio.service.S3Service;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import com.cloudbees.plugins.credentials.CredentialsProvider;
+import org.kohsuke.stapler.framework.io.IOException2;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -79,37 +80,14 @@ public class AppioRecorder extends Recorder {
 		String appioApiKeyBase64 = new String(encodedBytes);
 
 		// Zip <build>.app package for upload to S3
-		final String unzippedPath = appPath.getRemote();
-		final String zippedPath = unzippedPath + ".zip";
-		listener.getLogger().println("Creating zipped package: " + zippedPath);
+        File zip = File.createTempFile("appio","zip");
+        // = appPath.getParent().child(appPath.getName() + ".zip");
+		listener.getLogger().println("Creating zipped package: " + zip);
 
 		try {
-
-		// Build Zip file for upload to S3: support Jenkins remoting
-		appPath.act(new FileCallable<Void> () {
-			public Void invoke(File f,VirtualChannel channel) throws IOException, InterruptedException {	
-				File zipFile = new File(zippedPath);
-				if (!zipFile.exists()) {
-					zipFile.createNewFile();
-				}
-				FileOutputStream fop = new FileOutputStream(zipFile);
-				appPath.zip(fop);
-				return null;
-			   }		
-		});
-		
-/*
-		File zipFile = new File(zippedPath);
-		if (!zipFile.exists()) {
-			listener.getLogger().println("Created zip file: " + zippedPath);
-			zipFile.createNewFile();
-		}
-		FileOutputStream fop = new FileOutputStream(zipFile);
-		appPath.zip(fop);
-*/		
-		} catch (Exception e) {
-			listener.getLogger().println("Exception creating zip file: " + e.getMessage());
-			return false;
+            appPath.zip(new FilePath(zip));
+		} catch (IOException e) {
+            throw new IOException2("Exception creating "+zip,e);
 		}
 
 
@@ -120,7 +98,7 @@ public class AppioRecorder extends Recorder {
 					.getPlainText());
 			listener.getLogger().println("Uploading to S3 bucket: " + appioCredentials.getS3Bucket());
 			//s3Url = s3service.getUploadUrl(appioCredentials.getS3Bucket(), appName, zippedPath);
-			s3Url = s3service.getUploadUrl(appioCredentials.getS3Bucket(), appName + build.getNumber(), zippedPath);
+			s3Url = s3service.getUploadUrl(appioCredentials.getS3Bucket(), appName + build.getNumber(), zip);
 			listener.getLogger().println("S3 Public URL: " + s3Url);
 		} catch (Exception e) {
 			listener.getLogger().println("Exception while uploading to S3: " + e.getMessage());
@@ -151,7 +129,7 @@ public class AppioRecorder extends Recorder {
 			build.getProject().getAction(AppioProjectAction.class)
 					.setAppURL("App.io URL: " + "https://app.io/" + appObject.getPublic_key());
 		} catch (Exception e) {
-			listener.getLogger().println("Error uploading app/version to App.io: " + e.getMessage());
+            throw new IOException2("Error uploading app/version to App.io",e);
 		}
 
 		return true;
@@ -162,7 +140,7 @@ public class AppioRecorder extends Recorder {
 
 		// Validation check
 		// public FormValidation doCheckAppFile(@QueryParameter String value)
-		// {É}
+		// {ï¿½}
 
 		@Override
 		public boolean isApplicable(Class<? extends AbstractProject> jobType) {
