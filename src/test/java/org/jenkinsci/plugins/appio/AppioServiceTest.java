@@ -46,7 +46,16 @@ public class AppioServiceTest {
 	private String uploadFile = null;
 
 	private Properties testProperties = new Properties();
-
+	
+	// Set logging levels
+    static {
+        Logger l = Logger.getLogger(AppioService.class.getName());
+        l.setLevel(Level.ALL);
+        ConsoleHandler h = new ConsoleHandler();
+        h.setLevel(Level.ALL);
+        l.addHandler(h);
+    }
+    
 	public AppioServiceTest() {
 		super();
 		loadTestProperties();
@@ -238,12 +247,4 @@ public class AppioServiceTest {
 			fail(e.getMessage());
 		}
 	}
-
-    static {
-        Logger l = Logger.getLogger(AppioService.class.getName());
-        l.setLevel(Level.ALL);
-        ConsoleHandler h = new ConsoleHandler();
-        h.setLevel(Level.ALL);
-        l.addHandler(h);
-    }
 }

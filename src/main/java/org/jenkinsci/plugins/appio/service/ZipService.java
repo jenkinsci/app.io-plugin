@@ -8,8 +8,6 @@ import java.io.Serializable;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.jenkinsci.plugins.appio.service.S3Service.Logger;
-
 /**
  * @author markprichard
  * 

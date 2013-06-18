@@ -18,7 +18,7 @@ public class AppioAction implements Action {
     }
 
     public String getDisplayName() {
-        return "App.io Simulator Link";
+        return "App.io iOS Simulator";
     }
 
     public String getUrlName() {
