@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -38,7 +39,6 @@ public class AppioService implements Serializable {
 
 	private final String appio_v1 = "application/vnd.app.io+json;version=1";
 
-	private Logger logger = null;
 	private String apiKey = null;
 
 	public AppioService(String apiKey) {
@@ -46,23 +46,7 @@ public class AppioService implements Serializable {
 		this.apiKey = apiKey;
 	}
 
-	public void setLogger(Logger logger) {
-		this.logger = logger;
-	}
-
-	static interface Logger {
-		void logDebug(String message);
-	}
-
-	private void logDebug(String message) {
-		if (logger != null) {
-			logger.logDebug(message);
-		} else {
-			System.out.println(message);
-		}
-	}
-
-	/**
+    /**
 	 * @param appName
 	 * @return AppioAppObject (org.jenkinsci.plugins.appio.model.AppioAppObject)
 	 * @throws Exception
@@ -93,14 +77,14 @@ public class AppioService implements Serializable {
 			StringEntity postBody = new StringEntity(gson.toJson(theApp),
 					ContentType.create("application/json", "UTF-8"));
 			httpPost.setEntity(postBody);
-			logDebug("AppioService.createApp() Request: " + gson.toJson(theApp));
+            LOGGER.fine("AppioService.createApp() Request: " + gson.toJson(theApp));
 
-			// Call App.io REST API to create the new app
+            // Call App.io REST API to create the new app
 			HttpResponse response = httpClient.execute(httpHost, httpPost);
 			String jsonAppioApp = handler.handleResponse(response);
-			logDebug("AppioService.createApp() Response: " + jsonAppioApp);
+            LOGGER.fine("AppioService.createApp() Response: " + jsonAppioApp);
 
-			// Get JSON data from the HTTP Response
+            // Get JSON data from the HTTP Response
 			AppioApp appioApp = new Gson().fromJson(jsonAppioApp,
 					AppioApp.class);
 			theAppObject = appioApp.getApp();
@@ -129,8 +113,8 @@ public class AppioService implements Serializable {
 		httpDelete.addHeader("Accept", appio_v1);
 
 		try {
-			logDebug("AppioService.deleteApp(): deleting app id " + appId);
-			httpClient.execute(httpHost, httpDelete);
+            LOGGER.fine("AppioService.deleteApp(): deleting app id " + appId);
+            httpClient.execute(httpHost, httpDelete);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -157,12 +141,12 @@ public class AppioService implements Serializable {
 			httpGet.addHeader("Authorization", appioAuth);
 			httpGet.addHeader("Accept", appio_v1);
 
-			logDebug("AppioService.findApp() Request");
-			HttpResponse response = httpClient.execute(httpHost, httpGet);
+            LOGGER.fine("AppioService.findApp() Request");
+            HttpResponse response = httpClient.execute(httpHost, httpGet);
 			String jsonAppioApps = handler.handleResponse(response);
-			logDebug("AppioService.findApp() Response: " + jsonAppioApps);
+            LOGGER.fine("AppioService.findApp() Response: " + jsonAppioApps);
 
-			AppioApps appioApps = new Gson().fromJson(jsonAppioApps,
+            AppioApps appioApps = new Gson().fromJson(jsonAppioApps,
 					AppioApps.class);
 			List<AppioAppObject> list = Arrays.asList(appioApps.getApps());
 			Iterator<AppioAppObject> iterator = list.iterator();
@@ -171,13 +155,13 @@ public class AppioService implements Serializable {
 			while ((iterator.hasNext()) && (!foundAppName)) {
 				AppioAppObject thisApp = iterator.next();
 				if (thisApp.getName().equals(appName)) {
-					logDebug("Found app: " + appName);
-					theApp = thisApp;
+                    LOGGER.fine("Found app: " + appName);
+                    theApp = thisApp;
 				}
 			}
-			logDebug("App not found: " + appName);
+            LOGGER.fine("App not found: " + appName);
 
-		} catch (Exception e) {
+        } catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		} finally {
@@ -207,10 +191,10 @@ public class AppioService implements Serializable {
 			versionObj.setApp_id(appId);
 			versionObj.setBundle_url(urlUpload);
 			newVersion.setVersion(versionObj);
-			logDebug("AppioService.addVersion() Request: "
-					+ new Gson().toJson(newVersion));
+            LOGGER.fine("AppioService.addVersion() Request: "
+                        + new Gson().toJson(newVersion));
 
-			// Send new version REST call to Appio
+            // Send new version REST call to Appio
 			httpPostVersions.addHeader("Authorization", "Basic " + apiKey);
 			httpPostVersions.addHeader("Content-Type", "application/json");
 			httpPostVersions.addHeader("Accept", appio_v1);
@@ -222,8 +206,8 @@ public class AppioService implements Serializable {
 					httpPostVersions);
 
 			String jsonAppioVersion = handler.handleResponse(response);
-			logDebug("AppioService.addVersion() Response: " + jsonAppioVersion);
-			newVersion = new Gson().fromJson(jsonAppioVersion,
+            LOGGER.fine("AppioService.addVersion() Response: " + jsonAppioVersion);
+            newVersion = new Gson().fromJson(jsonAppioVersion,
 					AppioVersion.class);
 
 		} catch (Exception e) {
@@ -237,4 +221,6 @@ public class AppioService implements Serializable {
 		}
 		return newVersion.getVersion();
 	}
+
+    private static final Logger LOGGER = Logger.getLogger(AppioService.class.getName());
 }
