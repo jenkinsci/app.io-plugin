@@ -16,7 +16,7 @@
 	<packaging>hpi</packaging>
 	<name>Jenkins App.io Plugin</name>
 	<description>Integrates Jenkins with App.io for online iOS simulator support</description>
-	<url></url>
+    <url>https://wiki.jenkins-ci.org/display/JENKINS/App.io+Plugin</url>
 
 	<developers>
 		<developer>
