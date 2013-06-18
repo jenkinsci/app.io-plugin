@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.codec.binary.Base64;
 import org.jenkinsci.plugins.appio.model.AppioAppObject;
@@ -235,4 +238,12 @@ public class AppioServiceTest {
 			fail(e.getMessage());
 		}
 	}
+
+    static {
+        Logger l = Logger.getLogger(AppioService.class.getName());
+        l.setLevel(Level.ALL);
+        ConsoleHandler h = new ConsoleHandler();
+        h.setLevel(Level.ALL);
+        l.addHandler(h);
+    }
 }
