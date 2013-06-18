@@ -5,6 +5,9 @@
       <div>
         ${it.appURL}
       </div>
+
+      <iframe src="${it.appURL}?orientation=portrait&amp;device=iphone5" height="665px" width="484px" frameborder="0" allowtransparency="true" scrolling="no"/>
+
     </l:main-panel>
   </l:layout>
 </j:jelly>
