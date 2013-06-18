@@ -44,7 +44,13 @@ public class AppioRecorder extends Recorder {
 
 	@Override
 	public Action getProjectAction(AbstractProject<?, ?> project) {
-		return new AppioProjectAction();
+        AbstractBuild<?,?> b = project.getLastBuild();
+        for (int i=0; i<10; i++) {
+            AppioProjectAction a = b.getAction(AppioProjectAction.class);
+            if (a!=null)    return a;
+            b = b.getPreviousBuild();
+        }
+        return null;
 	}
 
 	@DataBoundConstructor
