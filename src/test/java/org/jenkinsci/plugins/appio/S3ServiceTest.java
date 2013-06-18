@@ -40,6 +40,9 @@ import org.jenkinsci.plugins.appio.service.AppioService;
 import org.jenkinsci.plugins.appio.service.S3Service;
 import org.junit.Test;
 
+/**
+ * @author Mark Prichard
+ */
 public class S3ServiceTest {
 
 	// Test properties loaded via getClassLoader().getResourceAsStream()

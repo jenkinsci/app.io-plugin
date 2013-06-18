@@ -28,6 +28,7 @@ import hudson.model.Action;
 
 /**
  * @author Kohsuke Kawaguchi
+ * @author Mark Prichard
  */
 public class AppioAction implements Action {
 	

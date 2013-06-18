@@ -30,6 +30,7 @@ import hudson.model.ProminentProjectAction;
 
 /**
  * @author Kohsuke Kawaguchi
+ * @author Mark Prichard
  */
 public class AppioProjectAction implements ProminentProjectAction {
     private final AbstractProject<?, ?> project;

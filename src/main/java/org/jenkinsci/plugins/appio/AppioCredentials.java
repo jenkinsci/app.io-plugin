@@ -33,7 +33,8 @@ import com.cloudbees.plugins.credentials.CredentialsDescriptor;
 import com.cloudbees.plugins.credentials.BaseCredentials;
 
 /**
- * @author Kohsuke Kawaguchi, Mark Prichard
+ * @author Kohsuke Kawaguchi
+ * @author Mark Prichard
  */
 public class AppioCredentials extends BaseCredentials {
 
