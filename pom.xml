@@ -110,13 +110,6 @@
 		</plugins>
 	</build>
 
-    <distributionManagement>
-      <repository>
-        <id>maven.jenkins-ci.org</id>
-        <url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
-      </repository>
-    </distributionManagement>
-
     <scm>
       <connection>scm:git:git://github.com/jenkinsci/app.io-plugin.git</connection>
       <developerConnection>scm:git:git@github.com:jenkinsci/app.io-plugin.git</developerConnection>
