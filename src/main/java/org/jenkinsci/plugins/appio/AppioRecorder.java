@@ -134,8 +134,10 @@ public class AppioRecorder extends Recorder {
 
                 // Get the public App.io link for the app
                 listener.getLogger().println("App.io URL: " + "https://app.io/" + appObject.getPublic_key());
-                build.getProject().getAction(AppioProjectAction.class)
-                        .setAppURL("https://app.io/" + appObject.getPublic_key());
+
+                AppioProjectAction a = new AppioProjectAction();
+                a.setAppURL("https://app.io/" + appObject.getPublic_key());
+                build.addAction(a);
             } catch (Exception e) {
                 throw new IOException2("Error uploading app/version to App.io",e);
             }
