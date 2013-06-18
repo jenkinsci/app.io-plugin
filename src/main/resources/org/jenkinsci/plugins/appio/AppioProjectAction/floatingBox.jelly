@@ -1,0 +1,2 @@
+<j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout">
+<iframe src="${it.appURL}?orientation=portrait&amp;device=iphone5" height="665px" width="484px" frameborder="0" allowtransparency="true" scrolling="no" />
