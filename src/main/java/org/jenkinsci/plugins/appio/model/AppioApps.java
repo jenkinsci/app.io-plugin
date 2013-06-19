@@ -26,24 +26,30 @@ package org.jenkinsci.plugins.appio.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Model class for App.io REST API v1
+ * 
+ * @see <a href="http://docs.app.io/api">http://docs.app.io/api</a>
+ * @author Mark Prichard
+ */
 @XmlRootElement
 public class AppioApps {
-    AppioAppObject[] apps;
+	AppioAppObject[] apps;
 
-    public AppioApps() {
-        super();
-    }
+	public AppioApps() {
+		super();
+	}
 
-    public AppioApps(AppioAppObject[] apps) {
-        super();
-        this.apps = apps;
-    }
+	public AppioApps(AppioAppObject[] apps) {
+		super();
+		this.apps = apps;
+	}
 
-    public AppioAppObject[] getApps() {
-        return apps;
-    }
+	public AppioAppObject[] getApps() {
+		return apps;
+	}
 
-    public void setApps(AppioAppObject[] apps) {
-        this.apps = apps;
-    }
+	public void setApps(AppioAppObject[] apps) {
+		this.apps = apps;
+	}
 }

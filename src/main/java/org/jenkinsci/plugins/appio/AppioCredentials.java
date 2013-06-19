@@ -38,25 +38,25 @@ import com.cloudbees.plugins.credentials.BaseCredentials;
  */
 public class AppioCredentials extends BaseCredentials {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    // App.io API Key
-    private final Secret apiKey;
-    
-    // AWS Credentials and S3 Bucket
-    private final String s3AccessKey;
-    private final Secret s3SecretKey;
-    private final String s3Bucket;
+	// App.io API Key
+	private final Secret apiKey;
 
-    @DataBoundConstructor
-    public AppioCredentials(String s3AccessKey, Secret s3SecretKey, String s3Bucket, Secret apiKey) {
-        this.s3AccessKey = s3AccessKey;
-        this.s3SecretKey = s3SecretKey;
-        this.s3Bucket = s3Bucket;
-        this.apiKey = apiKey;
-    }
+	// AWS Credentials and S3 Bucket
+	private final String s3AccessKey;
+	private final Secret s3SecretKey;
+	private final String s3Bucket;
 
-    public Secret getApiKey() {
+	@DataBoundConstructor
+	public AppioCredentials(String s3AccessKey, Secret s3SecretKey, String s3Bucket, Secret apiKey) {
+		this.s3AccessKey = s3AccessKey;
+		this.s3SecretKey = s3SecretKey;
+		this.s3Bucket = s3Bucket;
+		this.apiKey = apiKey;
+	}
+
+	public Secret getApiKey() {
 		return apiKey;
 	}
 
@@ -73,10 +73,10 @@ public class AppioCredentials extends BaseCredentials {
 	}
 
 	@Extension
-    public static class DescriptorImpl extends CredentialsDescriptor {
-        @Override
-        public String getDisplayName() {
-            return "App.io Credentials";
-        }
-    }
+	public static class DescriptorImpl extends CredentialsDescriptor {
+		@Override
+		public String getDisplayName() {
+			return "App.io Credentials";
+		}
+	}
 }

@@ -28,25 +28,31 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.google.gson.annotations.Expose;
 
+/**
+ * Model class for App.io REST API v1
+ * 
+ * @see <a href="http://docs.app.io/api">http://docs.app.io/api</a>
+ * @author Mark Prichard
+ */
 @XmlRootElement
 public class AppioApp {
-    @Expose
-    private AppioAppObject app;
+	@Expose
+	private AppioAppObject app;
 
-    public AppioApp() {
-        super();
-    }
+	public AppioApp() {
+		super();
+	}
 
-    public AppioApp(AppioAppObject app) {
-        super();
-        this.app = app;
-    }
+	public AppioApp(AppioAppObject app) {
+		super();
+		this.app = app;
+	}
 
-    public AppioAppObject getApp() {
-        return app;
-    }
+	public AppioAppObject getApp() {
+		return app;
+	}
 
-    public void setApp(AppioAppObject app) {
-        this.app = app;
-    }
+	public void setApp(AppioAppObject app) {
+		this.app = app;
+	}
 }

@@ -37,8 +37,7 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 
 /**
- * @author markprichard
- * 
+ * @author Mark Prichard
  */
 public class S3Service implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -51,17 +50,20 @@ public class S3Service implements Serializable {
 	}
 
 	/**
+	 * Implements a simple interface to the Amazon S3 service
+	 * 
 	 * @param bucketName
+	 *            The Amazon S3 bucket used for the file upload
 	 * @param keyName
+	 *            The Amazon S3 key used to store the file
 	 * @param uploadFile
-	 * @return
+	 *            The {@link File} to be uploaded
+	 * @return The S3 public URL for the uploaded package
 	 */
-	public String getUploadUrl(String bucketName, String keyName, File uploadFile) throws AmazonServiceException,
-			AmazonClientException {
+	public String getUploadUrl(String bucketName, String keyName, File uploadFile) throws AmazonServiceException, AmazonClientException {
 
 		try {
-			s3client.putObject(new PutObjectRequest(bucketName, keyName, uploadFile)
-					.withCannedAcl(CannedAccessControlList.PublicRead));
+			s3client.putObject(new PutObjectRequest(bucketName, keyName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
 
 		} catch (AmazonServiceException ase) {
 			LOGGER.fine("AmazonServiceException");
@@ -81,6 +83,6 @@ public class S3Service implements Serializable {
 		LOGGER.fine("S3 public URL: " + s3PublicUrl);
 		return s3PublicUrl;
 	}
-	
-    private static final Logger LOGGER = Logger.getLogger(S3Service.class.getName());
+
+	private static final Logger LOGGER = Logger.getLogger(S3Service.class.getName());
 }

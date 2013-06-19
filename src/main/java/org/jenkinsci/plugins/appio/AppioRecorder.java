@@ -47,17 +47,17 @@ import org.jenkinsci.plugins.appio.model.AppioVersionObject;
 import org.jenkinsci.plugins.appio.service.AppioService;
 import org.jenkinsci.plugins.appio.service.S3Service;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.framework.io.IOException2;
 
 import com.cloudbees.plugins.credentials.CredentialsProvider;
-import org.kohsuke.stapler.framework.io.IOException2;
 
 /**
  * @author Kohsuke Kawaguchi
  * @author Mark Prichard
  */
 public class AppioRecorder extends Recorder {
-	private String appFile;
-	private String appName;
+	private final String appFile;
+	private final String appName;
 
 	public String getAppName() {
 		return appName;
@@ -84,8 +84,7 @@ public class AppioRecorder extends Recorder {
 
 	@SuppressWarnings("serial")
 	@Override
-	public boolean perform(AbstractBuild<?, ?> build, Launcher launcher,
-			final BuildListener listener) throws InterruptedException,
+	public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, final BuildListener listener) throws InterruptedException,
 			IOException {
 
 		if (build.getResult().isWorseOrEqualTo(Result.FAILURE))
@@ -94,12 +93,10 @@ public class AppioRecorder extends Recorder {
 		final FilePath appPath = build.getWorkspace().child(appFile);
 		listener.getLogger().println("Deploying to App.io: " + appPath);
 
-		List<AppioCredentials> credentialsList = CredentialsProvider
-				.lookupCredentials(AppioCredentials.class, build.getProject());
+		List<AppioCredentials> credentialsList = CredentialsProvider.lookupCredentials(AppioCredentials.class, build.getProject());
 		AppioCredentials appioCredentials = credentialsList.get(0);
 
-		byte[] encodedBytes = Base64.encodeBase64(appioCredentials.getApiKey()
-				.getPlainText().getBytes());
+		byte[] encodedBytes = Base64.encodeBase64(appioCredentials.getApiKey().getPlainText().getBytes());
 		String appioApiKeyBase64 = new String(encodedBytes);
 
 		// Zip <build>.app package for upload to S3
@@ -117,19 +114,13 @@ public class AppioRecorder extends Recorder {
 			// Upload <build>.app.zip to S3 bucket
 			String s3Url = null;
 			try {
-				S3Service s3service = new S3Service(
-						appioCredentials.getS3AccessKey(), appioCredentials
-								.getS3SecretKey().getPlainText());
-				listener.getLogger().println(
-						"Uploading to S3 bucket: "
-								+ appioCredentials.getS3Bucket());
+				S3Service s3service = new S3Service(appioCredentials.getS3AccessKey(), appioCredentials.getS3SecretKey().getPlainText());
+				listener.getLogger().println("Uploading to S3 bucket: " + appioCredentials.getS3Bucket());
 
-				s3Url = s3service.getUploadUrl(appioCredentials.getS3Bucket(),
-						appName + build.getNumber(), zip);
+				s3Url = s3service.getUploadUrl(appioCredentials.getS3Bucket(), appName + build.getNumber(), zip);
 				listener.getLogger().println("S3 Public URL: " + s3Url);
 			} catch (Exception e) {
-				throw new IOException2("Exception while uploading to S3" + zip,
-						e);
+				throw new IOException2("Exception while uploading to S3" + zip, e);
 			}
 
 			// Create new app/version on App.io
@@ -138,36 +129,27 @@ public class AppioRecorder extends Recorder {
 				AppioAppObject appObject = null;
 				AppioService appioService = new AppioService(appioApiKeyBase64);
 
-				listener.getLogger().println(
-						"Checking for App.io app: " + appName);
+				listener.getLogger().println("Checking for App.io app: " + appName);
 				appObject = appioService.findApp(appName);
 
 				// Create new App.io app if necessary
 				if (appObject.getId() == null) {
-					listener.getLogger().println(
-							"Creating new App.io application");
+					listener.getLogger().println("Creating new App.io application");
 					appObject = appioService.createApp(appName);
 				}
-				listener.getLogger().println(
-						"App.io application id: " + appObject.getId());
+				listener.getLogger().println("App.io application id: " + appObject.getId());
 
 				// Add new version pointing to S3 URL
 				listener.getLogger().println("Adding new version");
-				AppioVersionObject versionObject = appioService.addVersion(
-						appObject.getId(), s3Url);
-				listener.getLogger().println(
-						"App.io version id: " + versionObject.getId());
+				AppioVersionObject versionObject = appioService.addVersion(appObject.getId(), s3Url);
+				listener.getLogger().println("App.io version id: " + versionObject.getId());
 
 				// Get the public App.io link for the app
-				listener.getLogger().println(
-						"App.io URL: " + "https://app.io/"
-								+ appObject.getPublic_key());
+				listener.getLogger().println("App.io URL: " + "https://app.io/" + appObject.getPublic_key());
 
-				build.addAction(new AppioAction("https://app.io/"
-						+ appObject.getPublic_key()));
+				build.addAction(new AppioAction("https://app.io/" + appObject.getPublic_key()));
 			} catch (Exception e) {
-				throw new IOException2("Error uploading app/version to App.io",
-						e);
+				throw new IOException2("Error uploading app/version to App.io", e);
 			}
 
 			return true;
