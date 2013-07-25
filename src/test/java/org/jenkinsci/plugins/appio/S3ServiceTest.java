@@ -43,7 +43,7 @@ import static org.junit.Assert.*;
 public class S3ServiceTest {
 
 	// Test properties loaded from properties file
-    private static final String propertyFile = "test.properties";
+    private static final String propertyFile = "../../test.properties";
 
     private String accessKey = null;
     private String secretKey = null;

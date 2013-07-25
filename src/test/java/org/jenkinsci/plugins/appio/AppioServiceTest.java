@@ -48,7 +48,7 @@ import static org.junit.Assert.*;
 public class AppioServiceTest {
 
     // Test properties loaded from properties file
-    private static final String propertyFile = "test.properties";
+    private static final String propertyFile = "../../test.properties";
 
 	// AppioService test variables
 	private String apiKeyUnencoded = null;
