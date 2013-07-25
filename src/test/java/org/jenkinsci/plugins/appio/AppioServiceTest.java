@@ -24,19 +24,6 @@
 
 package org.jenkinsci.plugins.appio;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-import java.util.UUID;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.apache.commons.codec.binary.Base64;
 import org.jenkinsci.plugins.appio.model.AppioAppObject;
 import org.jenkinsci.plugins.appio.model.AppioVersionObject;
@@ -44,14 +31,24 @@ import org.jenkinsci.plugins.appio.service.AppioService;
 import org.jenkinsci.plugins.appio.service.S3Service;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+import java.util.UUID;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static org.junit.Assert.*;
+
 /**
  * @author Mark Prichard
  */
 public class AppioServiceTest {
 
-	// Test properties loaded via getClassLoader().getResourceAsStream()
-	private String propertyPackage = ("org/jenkinsci/plugins/appio/");
-	private String propertyFile = propertyPackage + "test.properties";
+    // Test properties loaded from properties file
+    private static final String propertyFile = "test.properties";
 
 	// AppioService test variables
 	private String apiKeyUnencoded = null;
@@ -85,10 +82,8 @@ public class AppioServiceTest {
 
 	// Utility to load test properties
 	public void loadTestProperties() {
-		InputStream in = this.getClass().getClassLoader().getResourceAsStream(propertyFile);
-
 		try {
-			testProperties.load(in);
+            testProperties.load(new FileInputStream(propertyFile));
 
 			apiKeyUnencoded = testProperties.getProperty("Appio.apiKeyUnencoded");
 			byte[] encodedBytes = Base64.encodeBase64(apiKeyUnencoded.getBytes());

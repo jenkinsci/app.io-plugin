@@ -4,9 +4,10 @@ app.io-plugin
 Jenkins CI plugin for App.io: uploads iOS simulator builds to App.io (via AWS S3 service) so that a live simulator link is available on the main project page.
 
 ## Unit Testing
-To run unit tests, you will need to set a number of test properties to define the App.io and Amazon S3 credentials to use and other test parameters.  The property file for the tests is loaded from src/main/resources/org/jenkinsci/plugins/appio/test.properties: there is a blank template provided in the repo.
+To run unit tests, you will need to set a number of test properties to define the App.io and Amazon S3 credentials to use and other test parameters.  The property file for the tests is test.properties: there is a blank template provided in the repo.
 
-Warning: the unit tests will remove the App.io app deployments after running - please use a different app name (Appio.appName) from any existing App.io app deployments.
+Warning: unit tests will over-write any existing App.io deployments with the same name - please use a different app name (Appio.appName).
+
 
 ### App.io Test Properties
 1. Appio.appName=name for app on App.io
