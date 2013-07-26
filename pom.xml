@@ -98,16 +98,6 @@
         </pluginRepository>
     </pluginRepositories>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.jenkins-ci.tools</groupId>
-                <artifactId>maven-hpi-plugin</artifactId>
-                <version>1.95</version>
-            </plugin>
-        </plugins>
-    </build>
-
     <scm>
         <connection>scm:git:git://github.com/jenkinsci/app.io-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:jenkinsci/app.io-plugin.git</developerConnection>
@@ -130,6 +120,11 @@
                             <excludes>**/AppioServiceTest.java</excludes>
                             <excludes>**/S3ServiceTest.java</excludes>
                         </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.jenkins-ci.tools</groupId>
+                        <artifactId>maven-hpi-plugin</artifactId>
+                        <version>1.95</version>
                     </plugin>
                 </plugins>
             </build>
