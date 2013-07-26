@@ -120,6 +120,7 @@
                      -->
                     <releaseProfiles>release</releaseProfiles>
                     <goals>deploy assembly:single</goals>
+                    <preparationGoals>clean verify -DskipTests</preparationGoals>
                 </configuration>
             </plugin>
         </plugins>
