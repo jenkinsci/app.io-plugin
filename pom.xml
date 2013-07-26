@@ -104,6 +104,27 @@
         <url>http://github.com/jenkinsci/app.io-plugin</url>
     </scm>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jenkins-ci.tools</groupId>
+                <artifactId>maven-hpi-plugin</artifactId>
+                <version>1.95</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.4.1</version>
+                <configuration>
+                    <!--
+                      During release:perform, enable the "release" profile
+                     -->
+                    <releaseProfiles>release</releaseProfiles>
+                    <goals>deploy assembly:single</goals>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <profiles>
         <profile>
             <id>release</id>
@@ -120,11 +141,6 @@
                             <excludes>**/AppioServiceTest.java</excludes>
                             <excludes>**/S3ServiceTest.java</excludes>
                         </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.jenkins-ci.tools</groupId>
-                        <artifactId>maven-hpi-plugin</artifactId>
-                        <version>1.95</version>
                     </plugin>
                 </plugins>
             </build>
