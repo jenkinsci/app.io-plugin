@@ -10,7 +10,7 @@
 
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>appio</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1</version>
     <packaging>hpi</packaging>
     <name>Jenkins App.io Plugin</name>
     <description>Integrates Jenkins with App.io for online iOS simulator support</description>
@@ -102,7 +102,8 @@
         <connection>scm:git:git://github.com/jenkinsci/app.io-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:jenkinsci/app.io-plugin.git</developerConnection>
         <url>http://github.com/jenkinsci/app.io-plugin</url>
-    </scm>
+      <tag>appio-1.1</tag>
+  </scm>
 
     <build>
         <plugins>
