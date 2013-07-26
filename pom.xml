@@ -118,9 +118,8 @@
                     <!--
                       During release:perform, enable the "release" profile
                      -->
-                    <releaseProfiles>release</releaseProfiles>
-                    <goals>deploy assembly:single</goals>
-                    <preparationGoals>clean verify -DskipTests</preparationGoals>
+                    <releaseProfiles>no-integration-tests</releaseProfiles>
+                    <preparationGoals>clean verify -Pno-integration-tests</preparationGoals>
                 </configuration>
             </plugin>
         </plugins>
@@ -128,19 +127,16 @@
 
     <profiles>
         <profile>
-            <id>release</id>
-            <activation>
-                <property>
-                    <name>performRelease</name>
-                </property>
-            </activation>
+            <id>no-integration-tests</id>
             <build>
                 <plugins>
                     <plugin>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <excludes>**/AppioServiceTest.java</excludes>
-                            <excludes>**/S3ServiceTest.java</excludes>
+                            <excludes>
+                              <exclude>**/AppioServiceTest.java</exclude>
+                              <exclude>**/S3ServiceTest.java</exclude>
+                            </excludes>
                         </configuration>
                     </plugin>
                 </plugins>
