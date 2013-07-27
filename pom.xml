@@ -116,9 +116,7 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.4.1</version>
                 <configuration>
-                    <!--
-                      During release:perform, enable the "release" profile
-                     -->
+                    <!-- Enable "no-integration-tests" profile during release:perform-->
                     <releaseProfiles>no-integration-tests</releaseProfiles>
                     <preparationGoals>clean verify -Pno-integration-tests</preparationGoals>
                 </configuration>
@@ -134,6 +132,7 @@
                     <plugin>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
+                            <!-- Exclude tests that depend on test.properties -->
                             <excludes>
                               <exclude>**/AppioServiceTest.java</exclude>
                               <exclude>**/S3ServiceTest.java</exclude>
