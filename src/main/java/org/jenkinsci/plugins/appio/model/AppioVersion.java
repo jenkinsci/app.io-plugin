@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * Model class for App.io REST API v1
  * 
- * @see <a href="http://docs.app.io/api">http://docs.app.io/api</a>
+ * @see <a href="http://docs.app.io/api/versions/">http://docs.app.io/api/versions</a>
  * @author Mark Prichard
  */
 @XmlRootElement
