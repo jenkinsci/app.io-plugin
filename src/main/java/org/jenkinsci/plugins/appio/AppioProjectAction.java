@@ -48,9 +48,11 @@ public class AppioProjectAction implements ProminentProjectAction {
 			AppioAction a = b.getAction(AppioAction.class);
 			if (a != null)
 				return a;
-			b = b.getPreviousBuild();
+            else {
+                b = b.getPreviousBuild();
+            }
 		}
-		return null;
+        return new AppioAction("https://app.io/prismadrop");
 	}
 
 	public String getIconFileName() {

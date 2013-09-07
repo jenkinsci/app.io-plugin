@@ -24,9 +24,9 @@
 
 package org.jenkinsci.plugins.appio.model;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 import com.google.gson.annotations.Expose;
+
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Model class for App.io REST API v1
@@ -39,9 +39,9 @@ public class AppioApp {
 	@Expose
 	private AppioAppObject app;
 
-	public AppioApp() {
-		super();
-	}
+    public AppioApp() {
+        super();
+    }
 
 	public AppioApp(AppioAppObject app) {
 		super();

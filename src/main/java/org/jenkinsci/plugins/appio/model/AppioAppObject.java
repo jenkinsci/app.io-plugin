@@ -24,9 +24,9 @@
 
 package org.jenkinsci.plugins.appio.model;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 import com.google.gson.annotations.Expose;
+
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Model class for App.io REST API v1
@@ -42,8 +42,10 @@ public class AppioAppObject {
 	private String name = null;
 	private String public_key = null;
 	private String bundle = null;
-	private String icon = null;
-	private boolean default_to_landscape = false;
+	//private String icon = null;
+	//private AppioIconGroup icon;
+
+    private boolean default_to_landscape = false;
 	private String device_type = null;
 	private String description = null;
 	private Double price;
@@ -54,27 +56,6 @@ public class AppioAppObject {
 	private String updated_at;
 	private String[] version_ids;
 
-	public AppioAppObject(String id, String user_id, String name, String public_key, String bundle, String icon,
-			boolean default_to_landscape, String device_type, String description, Double price, String formatted_price,
-			String developer_name, String release_date, String created_at, String updated_at, String[] version_ids) {
-		super();
-		this.id = id;
-		this.user_id = user_id;
-		this.name = name;
-		this.public_key = public_key;
-		this.bundle = bundle;
-		this.icon = icon;
-		this.default_to_landscape = default_to_landscape;
-		this.device_type = device_type;
-		this.description = description;
-		this.price = price;
-		this.formatted_price = formatted_price;
-		this.developer_name = developer_name;
-		this.release_date = release_date;
-		this.created_at = created_at;
-		this.updated_at = updated_at;
-		this.version_ids = version_ids;
-	}
 
 	public AppioAppObject() {
 		super();
@@ -121,15 +102,17 @@ public class AppioAppObject {
 		this.bundle = bundle;
 	}
 
-	public String getIcon() {
-		return icon;
-	}
+    /*
+    public AppioIconGroup getIcon() {
+        return icon;
+    }
 
-	public void setIcon(String icon) {
-		this.icon = icon;
-	}
+    public void setIcon(AppioIconGroup icon) {
+        this.icon = icon;
+    }
+    */
 
-	public boolean isDefault_to_landscape() {
+    public boolean isDefault_to_landscape() {
 		return default_to_landscape;
 	}
 

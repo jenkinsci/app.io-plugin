@@ -24,26 +24,18 @@
 
 package org.jenkinsci.plugins.appio.model;
 
-import com.google.gson.annotations.Expose;
-
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
- * Model class for App.io REST API v1
- * 
- * @see <a href="http://docs.app.io/api">http://docs.app.io/api</a>
- * @author Mark Prichard
+ * User: Mark Prichard (mprichard@cloudbees.com))
+ * Date: 9/6/13
  */
-@XmlRootElement
-public class AppioVersion {
-	@Expose
-	private AppioVersionObject version;
+public class AppioIcon {
+    String url;
 
-	public AppioVersionObject getVersion() {
-		return version;
-	}
+    public String getUrl() {
+        return url;
+    }
 
-	public void setVersion(AppioVersionObject version) {
-		this.version = version;
-	}
+    public void setUrl(String url) {
+        this.url = url;
+    }
 }
