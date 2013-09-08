@@ -55,7 +55,7 @@ public class S3ServiceTest {
     private String badBucket = null;
     private File badFile = null;
 
-    private Properties testProperties = new Properties();
+    private final Properties testProperties = new Properties();
 
     // Set logging levels
     static {

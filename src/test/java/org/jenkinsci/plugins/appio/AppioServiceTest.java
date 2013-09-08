@@ -51,9 +51,7 @@ public class AppioServiceTest {
     private static final String propertyFile = "test.properties";
     private static boolean skipIntegrationTests = false;
 
-	// AppioService test variables
-	private String apiKeyUnencoded = null;
-	private String apiKey = null;
+    private String apiKey = null;
 	private String appName = null;
 	private String badKey = null;
 	private String badName = null;
@@ -65,7 +63,7 @@ public class AppioServiceTest {
 	private String keyName = null;
 	private String uploadFile = null;
 
-	private Properties testProperties = new Properties();
+	private final Properties testProperties = new Properties();
 
 	// Set logging levels
 	static {
@@ -86,7 +84,7 @@ public class AppioServiceTest {
 		try {
             testProperties.load(new FileInputStream(propertyFile));
 
-			apiKeyUnencoded = testProperties.getProperty("Appio.apiKeyUnencoded");
+            String apiKeyUnencoded = testProperties.getProperty("Appio.apiKeyUnencoded");
 			byte[] encodedBytes = Base64.encodeBase64(apiKeyUnencoded.getBytes());
 			apiKey = new String(encodedBytes);
 
@@ -118,7 +116,7 @@ public class AppioServiceTest {
 
 	@Test
 	public void createApp() {
-		AppioAppObject testAppObject = null;
+		AppioAppObject testAppObject;
 		AppioService testService = new AppioService(apiKey);
 
         if (skipIntegrationTests) {
@@ -146,7 +144,7 @@ public class AppioServiceTest {
 
 	@Test
 	public void createAppBadKey() {
-		AppioAppObject testAppObject = null;
+		AppioAppObject testAppObject;
 		AppioService testService = new AppioService(badKey);
 
         if (skipIntegrationTests) {
@@ -167,7 +165,7 @@ public class AppioServiceTest {
 
 	@Test
 	public void findApp() {
-		AppioAppObject testAppObject = null;
+		AppioAppObject testAppObject;
 		AppioService testService = new AppioService(apiKey);
 
         if (skipIntegrationTests) {
@@ -177,7 +175,7 @@ public class AppioServiceTest {
 
         try {
 			// Create a new Kickfolio app
-			testAppObject = testService.createApp(appName);
+			testService.createApp(appName);
 
 			// Find the newly-created app
 			testAppObject = testService.findApp(appName);
@@ -198,7 +196,7 @@ public class AppioServiceTest {
 
 	@Test
 	public void findAppNotFound() {
-		AppioAppObject testAppObject = null;
+		AppioAppObject testAppObject;
 		AppioService testService = new AppioService(apiKey);
 
         if (skipIntegrationTests) {
@@ -216,7 +214,7 @@ public class AppioServiceTest {
 
 	@Test
 	public void findAppBadKey() {
-		AppioAppObject testAppObject = null;
+		AppioAppObject testAppObject;
 		AppioService testService = new AppioService(badKey);
 
         if (skipIntegrationTests) {

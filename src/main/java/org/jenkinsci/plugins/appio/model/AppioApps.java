@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class AppioApps {
-	AppioAppObject[] apps;
+	private AppioAppObject[] apps;
 
 	public AppioApps() {
 		super();

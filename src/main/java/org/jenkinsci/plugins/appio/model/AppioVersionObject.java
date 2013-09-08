@@ -38,11 +38,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class AppioVersionObject {
 
-	private String id = null;
+	private String id;
 	@Expose
-	private String app_id = null;
+	private String app_id;
 	@Expose
-	private String bundle_url = null;
+	private String bundle_url;
 
 	public String getId() {
 		return id;

@@ -37,10 +37,10 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class AppioAppObject {
-	private String id = null;
+	private String id;
 	@Expose
-	private String name = null;
-	private String public_key = null;
+	private String name;
+	private String public_key;
 	private String[] version_ids;
 
 	public AppioAppObject() {
