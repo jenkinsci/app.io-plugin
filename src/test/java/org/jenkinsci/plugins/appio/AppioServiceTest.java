@@ -111,7 +111,7 @@ public class AppioServiceTest {
 			System.out.println("S3.uploadFile = " + uploadFile);
 			
 		} catch (IOException e) {
-            System.out.println(propertyFile + " not found: Skipping integration tests");
+            System.out.println("Properties file (" + propertyFile + ") not found: Skipping integration tests");
             skipIntegrationTests = true;
 		}
 	}
