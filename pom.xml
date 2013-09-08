@@ -102,8 +102,8 @@
         <connection>scm:git:git://github.com/jenkinsci/app.io-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:jenkinsci/app.io-plugin.git</developerConnection>
         <url>http://github.com/jenkinsci/app.io-plugin</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <build>
         <plugins>
