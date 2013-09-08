@@ -103,7 +103,6 @@ public class S3ServiceTest {
     public void getUploadUrl() {
         if (skipIntegrationTests) {
             assertTrue(true);
-            return;
         } else {
             S3Service s3Service = new S3Service(accessKey, secretKey);
             String testResult = null;
@@ -123,7 +122,6 @@ public class S3ServiceTest {
     public void getUploadURLBadPath() {
         if (skipIntegrationTests) {
             assertTrue(true);
-            return;
         } else {
             S3Service s3Service = new S3Service(accessKey, secretKey);
             String testResult = null;
@@ -141,7 +139,6 @@ public class S3ServiceTest {
     public void getUploadURLBadBucket() {
         if (skipIntegrationTests) {
             assertTrue(true);
-            return;
         } else {
             S3Service s3Service = new S3Service(accessKey, secretKey);
             String testResult = null;
