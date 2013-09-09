@@ -24,9 +24,9 @@
 
 package org.jenkinsci.plugins.appio;
 
-import hudson.model.ProminentProjectAction;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
+import hudson.model.ProminentProjectAction;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -56,7 +56,7 @@ public class AppioProjectAction implements ProminentProjectAction {
 	}
 
 	public String getIconFileName() {
-		return "setting.png";
+        return ("/plugin/appio/appio-logo.png");
 	}
 
 	public String getDisplayName() {
