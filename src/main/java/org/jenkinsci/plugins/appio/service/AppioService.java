@@ -24,12 +24,8 @@
 
 package org.jenkinsci.plugins.appio.service;
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Logger;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ResponseHandler;
@@ -40,14 +36,13 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.jenkinsci.plugins.appio.model.AppioApp;
-import org.jenkinsci.plugins.appio.model.AppioAppObject;
-import org.jenkinsci.plugins.appio.model.AppioApps;
-import org.jenkinsci.plugins.appio.model.AppioVersion;
-import org.jenkinsci.plugins.appio.model.AppioVersionObject;
+import org.jenkinsci.plugins.appio.model.*;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Implements a simple interface to the App.io REST API
@@ -114,6 +109,7 @@ public class AppioService implements Serializable {
 			theAppObject = appioApp.getApp();
 
 		} catch (Exception e) {
+            e.printStackTrace();
 			throw e;
 		} finally {
 			try {

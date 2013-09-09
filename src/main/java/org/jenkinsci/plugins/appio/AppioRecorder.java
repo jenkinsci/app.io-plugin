@@ -24,23 +24,15 @@
 
 package org.jenkinsci.plugins.appio;
 
+import com.cloudbees.plugins.credentials.CredentialsProvider;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.Action;
-import hudson.model.BuildListener;
-import hudson.model.Result;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
+import hudson.model.*;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
 import org.apache.commons.codec.binary.Base64;
 import org.jenkinsci.plugins.appio.model.AppioAppObject;
 import org.jenkinsci.plugins.appio.model.AppioVersionObject;
@@ -49,7 +41,9 @@ import org.jenkinsci.plugins.appio.service.S3Service;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.framework.io.IOException2;
 
-import com.cloudbees.plugins.credentials.CredentialsProvider;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -112,7 +106,7 @@ public class AppioRecorder extends Recorder {
 			}
 
 			// Upload <build>.app.zip to S3 bucket
-			String s3Url = null;
+			String s3Url;
 			try {
 				S3Service s3service = new S3Service(appioCredentials.getS3AccessKey(), appioCredentials.getS3SecretKey().getPlainText());
 				listener.getLogger().println("Uploading to S3 bucket: " + appioCredentials.getS3Bucket());
@@ -126,7 +120,7 @@ public class AppioRecorder extends Recorder {
 			// Create new app/version on App.io
 			try {
 				// Check if app already exists on App.io
-				AppioAppObject appObject = null;
+				AppioAppObject appObject;
 				AppioService appioService = new AppioService(appioApiKeyBase64);
 
 				listener.getLogger().println("Checking for App.io app: " + appName);
