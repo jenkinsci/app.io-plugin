@@ -100,8 +100,8 @@ public class AppioRecorder extends Recorder {
         listener.getLogger().println("Creating zipped package");
 
         try {
+            // Zip <build>.app package for upload to S3
             try {
-                // Zip <build>.app package for upload to S3
                 zip = File.createTempFile("appio", "zip");
                 appPath.zip(new FilePath(zip));
             } catch (IOException e) {
