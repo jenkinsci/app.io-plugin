@@ -50,123 +50,124 @@ import java.util.List;
  * @author Mark Prichard
  */
 public class AppioRecorder extends Recorder {
-	private final String appFile;
-	private final String appName;
+    private final String appFile;
+    private final String appName;
 
-	public String getAppName() {
-		return appName;
-	}
+    public String getAppName() {
+        return appName;
+    }
 
-	@Override
-	public Action getProjectAction(AbstractProject<?, ?> project) {
-		return new AppioProjectAction(project);
-	}
+    @Override
+    public Action getProjectAction(AbstractProject<?, ?> project) {
+        return new AppioProjectAction(project);
+    }
 
-	@DataBoundConstructor
-	public AppioRecorder(String appFile, String appName) {
-		this.appFile = appFile;
-		this.appName = appName;
-	}
+    @DataBoundConstructor
+    public AppioRecorder(String appFile, String appName) {
+        this.appFile = appFile;
+        this.appName = appName;
+    }
 
-	public String getAppFile() {
-		return appFile;
-	}
+    public String getAppFile() {
+        return appFile;
+    }
 
-	public BuildStepMonitor getRequiredMonitorService() {
-		return BuildStepMonitor.NONE;
-	}
+    public BuildStepMonitor getRequiredMonitorService() {
+        return BuildStepMonitor.NONE;
+    }
 
-	@SuppressWarnings("serial")
-	@Override
-	public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, final BuildListener listener) throws InterruptedException,
-			IOException {
+    @SuppressWarnings("serial")
+    @Override
+    public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, final BuildListener listener) throws InterruptedException,
+            IOException {
 
-		if (build.getResult().isWorseOrEqualTo(Result.FAILURE))
-			return false;
+        if (build.getResult().isWorseOrEqualTo(Result.FAILURE))
+            return false;
 
-		final FilePath appPath = build.getWorkspace().child(appFile);
-		listener.getLogger().println("Deploying to App.io: " + appPath);
+        final FilePath appPath = build.getWorkspace().child(appFile);
+        listener.getLogger().println("Deploying to App.io: " + appPath);
 
-		List<AppioCredentials> credentialsList = CredentialsProvider.lookupCredentials(AppioCredentials.class, build.getProject());
-		AppioCredentials appioCredentials = credentialsList.get(0);
+        List<AppioCredentials> credentialsList = CredentialsProvider.lookupCredentials(AppioCredentials.class, build.getProject());
+        AppioCredentials appioCredentials = credentialsList.get(0);
 
-		byte[] encodedBytes = Base64.encodeBase64(appioCredentials.getApiKey().getPlainText().getBytes());
-		String appioApiKeyBase64 = new String(encodedBytes);
+        byte[] encodedBytes = Base64.encodeBase64(appioCredentials.getApiKey().getPlainText().getBytes());
+        String appioApiKeyBase64 = new String(encodedBytes);
 
-		// Zip <build>.app package for upload to S3
-		File zip = File.createTempFile("appio", "zip");
+        // Zip <build>.app package for upload to S3
+        File zip = File.createTempFile("appio", "zip");
 
-		listener.getLogger().println("Creating zipped package");
+        listener.getLogger().println("Creating zipped package");
 
-		try {
-			try {
-				appPath.zip(new FilePath(zip));
-			} catch (IOException e) {
-				throw new IOException2("Exception creating " + zip, e);
-			}
+        try {
+            try {
+                appPath.zip(new FilePath(zip));
+            } catch (IOException e) {
+                throw new IOException2("Exception creating " + zip, e);
+            }
 
-			// Upload <build>.app.zip to S3 bucket
-			String s3Url;
-			try {
-				S3Service s3service = new S3Service(appioCredentials.getS3AccessKey(), appioCredentials.getS3SecretKey().getPlainText());
-				listener.getLogger().println("Uploading to S3 bucket: " + appioCredentials.getS3Bucket());
+            // Upload <build>.app.zip to S3 bucket
+            String s3Url;
+            try {
+                S3Service s3service = new S3Service(appioCredentials.getS3AccessKey(), appioCredentials.getS3SecretKey().getPlainText());
+                listener.getLogger().println("Uploading to S3 bucket: " + appioCredentials.getS3Bucket());
 
-				s3Url = s3service.getUploadUrl(appioCredentials.getS3Bucket(), appName + build.getNumber(), zip);
-				listener.getLogger().println("S3 Public URL: " + s3Url);
-			} catch (Exception e) {
-				throw new IOException2("Exception while uploading to S3" + zip, e);
-			}
+                s3Url = s3service.getUploadUrl(appioCredentials.getS3Bucket(), appName + build.getNumber(), zip);
+                listener.getLogger().println("S3 Public URL: " + s3Url);
+            } catch (Exception e) {
+                throw new IOException2("Exception while uploading to S3" + zip, e);
+            }
 
-			// Create new app/version on App.io
-			try {
-				// Check if app already exists on App.io
-				AppioAppObject appObject;
-				AppioService appioService = new AppioService(appioApiKeyBase64);
+            // Create new app/version on App.io
+            try {
+                // Check if app already exists on App.io
+                AppioAppObject appObject;
+                AppioService appioService = new AppioService(appioApiKeyBase64);
 
-				listener.getLogger().println("Checking for App.io app: " + appName);
-				appObject = appioService.findApp(appName);
+                listener.getLogger().println("Checking for App.io app: " + appName);
+                appObject = appioService.findApp(appName);
 
-				// Create new App.io app if necessary
-				if (appObject.getId() == null) {
-					listener.getLogger().println("Creating new App.io application");
-					appObject = appioService.createApp(appName);
-				}
-				listener.getLogger().println("App.io application id: " + appObject.getId());
+                // Create new App.io app if necessary
+                if (appObject.getId() == null) {
+                    listener.getLogger().println("Creating new App.io application");
+                    appObject = appioService.createApp(appName);
+                }
+                listener.getLogger().println("App.io application id: " + appObject.getId());
 
-				// Add new version pointing to S3 URL
-				listener.getLogger().println("Adding new version");
-				AppioVersionObject versionObject = appioService.addVersion(appObject.getId(), s3Url);
-				listener.getLogger().println("App.io version id: " + versionObject.getId());
+                // Add new version pointing to S3 URL
+                listener.getLogger().println("Adding new version");
+                AppioVersionObject versionObject = appioService.addVersion(appObject.getId(), s3Url);
+                listener.getLogger().println("App.io version id: " + versionObject.getId());
 
-				// Get the public App.io link for the app
-				listener.getLogger().println("App.io URL: " + "https://app.io/" + appObject.getPublic_key());
+                // Get the public App.io link for the app
+                listener.getLogger().println("App.io URL: " + "https://app.io/" + appObject.getPublic_key());
 
-				build.addAction(new AppioAction("https://app.io/" + appObject.getPublic_key()));
-			} catch (Exception e) {
-				throw new IOException2("Error uploading app/version to App.io", e);
-			}
+                build.addAction(new AppioAction("https://app.io/" + appObject.getPublic_key()));
+            } catch (Exception e) {
+                throw new IOException2("Error uploading app/version to App.io", e);
+            }
 
-			return true;
-		} finally {
-			zip.delete();
-		}
-	}
+            return true;
+        } finally {
+            zip.delete();
+        }
+    }
 
-	@Extension
-	public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 
-		// Validation check
-		// public FormValidation doCheckAppFile(@QueryParameter String value)
-		// {�}
+    @Extension
+    public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 
-		@Override
-		public boolean isApplicable(Class<? extends AbstractProject> jobType) {
-			return true;
-		}
+        // Validation check
+        // public FormValidation doCheckAppFile(@QueryParameter String value)
+        // {�}
 
-		@Override
-		public String getDisplayName() {
-			return "Upload to App.io";
-		}
-	}
+        @Override
+        public boolean isApplicable(Class<? extends AbstractProject> jobType) {
+            return true;
+        }
+
+        @Override
+        public String getDisplayName() {
+            return "Upload to App.io";
+        }
+    }
 }
