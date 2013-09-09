@@ -56,7 +56,7 @@ public class AppioProjectAction implements ProminentProjectAction {
 	}
 
 	public String getIconFileName() {
-        return ("/plugin/appio/Appio-logo.png");
+        return ("/plugin/appio/images/24x24/Appio-logo.png");
 	}
 
 	public String getDisplayName() {
