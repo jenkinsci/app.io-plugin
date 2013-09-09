@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package org.jenkinsci.plugins;
+package org.jenkinsci.plugins.appio;
 
 import org.jenkinsci.plugins.appio.service.S3Service;
 import org.junit.Test;
