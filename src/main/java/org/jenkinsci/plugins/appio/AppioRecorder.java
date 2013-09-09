@@ -33,12 +33,14 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
+import hudson.util.FormValidation;
 import org.apache.commons.codec.binary.Base64;
 import org.jenkinsci.plugins.appio.model.AppioAppObject;
 import org.jenkinsci.plugins.appio.model.AppioVersionObject;
 import org.jenkinsci.plugins.appio.service.AppioService;
 import org.jenkinsci.plugins.appio.service.S3Service;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.framework.io.IOException2;
 
 import java.io.File;
@@ -52,6 +54,8 @@ import java.util.List;
 public class AppioRecorder extends Recorder {
     private final String appFile;
     private final String appName;
+
+    private File zip;
 
     public String getAppName() {
         return appName;
@@ -93,13 +97,12 @@ public class AppioRecorder extends Recorder {
         byte[] encodedBytes = Base64.encodeBase64(appioCredentials.getApiKey().getPlainText().getBytes());
         String appioApiKeyBase64 = new String(encodedBytes);
 
-        // Zip <build>.app package for upload to S3
-        File zip = File.createTempFile("appio", "zip");
-
         listener.getLogger().println("Creating zipped package");
 
         try {
             try {
+                // Zip <build>.app package for upload to S3
+                zip = File.createTempFile("appio", "zip");
                 appPath.zip(new FilePath(zip));
             } catch (IOException e) {
                 throw new IOException2("Exception creating " + zip, e);
@@ -117,20 +120,19 @@ public class AppioRecorder extends Recorder {
                 throw new IOException2("Exception while uploading to S3" + zip, e);
             }
 
-            // Create new app/version on App.io
+            // Create new app version on App.io
             try {
                 // Check if app already exists on App.io
-                AppioAppObject appObject;
                 AppioService appioService = new AppioService(appioApiKeyBase64);
-
                 listener.getLogger().println("Checking for App.io app: " + appName);
-                appObject = appioService.findApp(appName);
+                AppioAppObject appObject = appioService.findApp(appName);
 
-                // Create new App.io app if necessary
+                // App not found - user has ignored the validation error
                 if (appObject.getId() == null) {
-                    listener.getLogger().println("Creating new App.io application");
-                    appObject = appioService.createApp(appName);
+                    listener.getLogger().println("Cannot find application (" + appName + ") on App.io");
+                    return false;
                 }
+
                 listener.getLogger().println("App.io application id: " + appObject.getId());
 
                 // Add new version pointing to S3 URL
@@ -156,9 +158,28 @@ public class AppioRecorder extends Recorder {
     @Extension
     public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 
-        // Validation check
-        // public FormValidation doCheckAppFile(@QueryParameter String value)
-        // {�}
+        // Check that the application exists on App.io
+        public FormValidation doCheckAppName(@QueryParameter("appName") String appName) {
+            try {
+                List<AppioCredentials> credentialsList = CredentialsProvider.lookupCredentials(AppioCredentials.class);
+                AppioCredentials appioCredentials = credentialsList.get(0);
+
+                byte[] encodedBytes = Base64.encodeBase64(appioCredentials.getApiKey().getPlainText().getBytes());
+                String appioApiKeyBase64 = new String(encodedBytes);
+
+                AppioService appioService = new AppioService(appioApiKeyBase64);
+                AppioAppObject appObject = appioService.findApp(appName);
+
+                if (appObject.getId() == null)
+                    return FormValidation.error("App.io application not found: " + appName);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return FormValidation.ok();
+        }
+
 
         @Override
         public boolean isApplicable(Class<? extends AbstractProject> jobType) {
