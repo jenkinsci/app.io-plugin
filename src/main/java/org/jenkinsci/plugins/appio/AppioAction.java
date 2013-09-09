@@ -39,7 +39,7 @@ public class AppioAction implements Action {
 	}
 
 	public String getIconFileName() {
-        return ("/plugin/appio/appio-logo.png");
+        return ("/plugin/appio/Appio-logo.png");
 	}
 
 	public String getDisplayName() {
