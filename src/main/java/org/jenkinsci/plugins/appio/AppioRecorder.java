@@ -28,6 +28,7 @@ import com.cloudbees.plugins.credentials.CredentialsProvider;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
+import hudson.Util;
 import hudson.model.*;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
@@ -79,6 +80,16 @@ public class AppioRecorder extends Recorder {
     public BuildStepMonitor getRequiredMonitorService() {
         return BuildStepMonitor.NONE;
     }
+    
+    public String resolve(String source, AbstractBuild build) {
+        String resolved = Util.replaceMacro(source, build.getBuildVariableResolver());
+
+        try {
+            return build.getEnvironment().expand(resolved);
+        } catch (Exception e) {
+            return resolved;
+        }
+    }
 
     @SuppressWarnings("serial")
     @Override
@@ -88,7 +99,14 @@ public class AppioRecorder extends Recorder {
         if (build.getResult().isWorseOrEqualTo(Result.FAILURE))
             return false;
 
-        final FilePath appPath = build.getWorkspace().child(appFile);
+        String resolvedAppFile = resolve(appFile, build);
+        final FilePath appPath = build.getWorkspace().child(resolvedAppFile);
+        
+        if (!appPath.exists()) {
+            listener.getLogger().println("Build package: " + resolvedAppFile + " not exists");
+            return false;
+        }
+
         listener.getLogger().println("Deploying to App.io: " + appPath);
 
         List<AppioCredentials> credentialsList = CredentialsProvider.lookupCredentials(AppioCredentials.class, build.getProject());
