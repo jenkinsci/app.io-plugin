@@ -102,6 +102,11 @@ public class AppioRecorder extends Recorder {
         String resolvedAppFile = resolve(appFile, build);
         final FilePath appPath = build.getWorkspace().child(resolvedAppFile);
         
+        if (!appPath.exists()) {
+            listener.getLogger().println("Build package: " + resolvedAppFile + " not exists");
+            return false;
+        }
+
         listener.getLogger().println("Deploying to App.io: " + appPath);
 
         List<AppioCredentials> credentialsList = CredentialsProvider.lookupCredentials(AppioCredentials.class, build.getProject());
